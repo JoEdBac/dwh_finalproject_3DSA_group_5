@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+
+  db:
+    image: postgres:15
+    container_name: dmaw_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bronze
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  etl:
+    build:
+      context: .
+      dockerfile: infra/etl/Dockerfile
+    container_name: dmaw_etl
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - db
+    volumes:
+      - ./data:/data
+      - ./scripts:/app/scripts
+      - ./infra/etl/requirements.txt:/app/requirements.txt
+    # No default commands yet. For testing, run the etl service with specific parameters.
+    # example run:
+    # docker-compose run --rm etl --path /data/raw/sample.csv --table_name orders_raw --user postgres --password postgres --host db --port 5432 --db bronze --use_copy
+volumes:
+  db_data:

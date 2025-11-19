@@ -1,0 +1,8 @@
+pandas
+sqlalchemy
+psycopg2-binary
+pyarrow
+requests
+openpyxl
+dbt-core
+dbt-postgres
